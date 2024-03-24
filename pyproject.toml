@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "xraygpt"
+description = "GPT to generate X-ray"
+authors = [
+    {name = "iaalm", email= "iaalmsimon@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.9"
+dynamic = [
+    "version",
+]
+
+keywords = [
+]
+
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3 :: Only",
+]
+
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+    "hatch",
+    "build",
+    "isort",
+    "black",
+    "mypy",
+    "q",
+]
+
+[project.urls]
+homepage = "https://github.com/iaalm/xraygpt"
+repository = "https://github.com/iaalm/xraygpt"
+documentation = "https://github.com/iaalm/xraygpt"
+
+[tool.hatch.version]
+path = "xraygpt/__about__.py"
+
+[tool.isort]
+profile = "black"
