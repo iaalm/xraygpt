@@ -26,6 +26,8 @@ classifiers = [
 ]
 
 dependencies = [
+  "ebooklib",
+  "BeautifulSoup4",
 ]
 
 [project.optional-dependencies]
