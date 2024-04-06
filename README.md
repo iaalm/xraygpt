@@ -1,11 +1,15 @@
-# xraygpt
+# 🔬📖 X-ray GPT
 
-## Dev Setup
+Generate kindle-like x-ray for e-books with LLM
+
+## 🚀 Usage
+
+## 🧑‍💻 Dev Setup
 ```shell
 pip install -e '.[dev]'
 ```
 
-### Static analysis
+### 🎩 Static analysis
 ```shell
 make format
 ```
