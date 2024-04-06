@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "xraygpt"
-description = "GPT to generate X-ray"
+description = "Generate kindle-like x-ray for e-books with LLM"
 authors = [
     {name = "iaalm", email= "iaalmsimon@gmail.com"}
 ]
-license = {text = "MIT"}
+license = {text = "BSD-3"}
 readme = "README.md"
 requires-python = ">=3.9"
 dynamic = [
