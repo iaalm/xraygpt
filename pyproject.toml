@@ -39,8 +39,12 @@ azure = [
     "azure-ai-textanalytics",
 ]
 
-dev = [
+all = [
     "xraygpt[azure]",
+]
+
+dev = [
+    "xraygpt[all]",
     "hatch",
     "build",
     "isort",
