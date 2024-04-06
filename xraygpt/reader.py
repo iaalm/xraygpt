@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from ebooklib import ITEM_DOCUMENT, epub
 
 
-class EPubExtractor:
+class EPubReader:
     def __init__(self, filename):
         self.book = epub.read_epub(filename)
 
@@ -20,5 +20,5 @@ class EPubExtractor:
 
 
 if __name__ == "__main__":
-    for item in EPubExtractor("workdir/InfiniteJest.epub"):
+    for item in EPubReader("workdir/InfiniteJest.epub"):
         print(len(item))
