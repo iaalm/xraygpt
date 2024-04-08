@@ -13,10 +13,11 @@ class EPubReader:
     def __next__(self):
         try:
             item = next(self.it)
-            soup = BeautifulSoup(item.get_body_content(), "html.parser")
-            return soup.get_text()
         except StopIteration:
             raise StopIteration
+
+        soup = BeautifulSoup(item.get_body_content(), "html.parser")
+        return soup.get_text()
 
 
 if __name__ == "__main__":

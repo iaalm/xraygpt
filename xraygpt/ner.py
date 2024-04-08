@@ -15,7 +15,7 @@ def recognize_entities(reviews: List[str]) -> None:
         endpoint=endpoint, credential=AzureKeyCredential(key)
     )
 
-    reviews = sillySplit(reviews, 5000)
+    reviews = list(sillySplit(reviews, 5000))
     result_raw = [text_analytics_client.recognize_entities([r])[0] for r in reviews]
     result = [review for review in result_raw if not review.is_error]
     result_error = [review for review in result_raw if review.is_error]
