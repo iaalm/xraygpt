@@ -1,10 +1,12 @@
+from loguru import logger
+
 from xraygpt.ner import recognize_entities
 from xraygpt.reader import EPubReader
 
 
 def epubSummaryFlow(filename):
     for item in EPubReader(filename):
-        print(item)
+        logger.debug(item)
         recognize_entities([item])
         break
 

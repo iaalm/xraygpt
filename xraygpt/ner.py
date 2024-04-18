@@ -33,9 +33,8 @@ def recognize_entities(reviews: List[str]) -> set[str]:
 
     for review in _recognize_entities(text_analytics_client, reviews):
         if review.is_error:
-            print("Error: ", review["error"])
+            logger.error("Error: {}", review["error"])
             continue
-
 
         for entity in review.entities:
             if entity.category == "Person" and entity.text not in persons:
