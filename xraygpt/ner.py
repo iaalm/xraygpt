@@ -1,33 +1,48 @@
 import os
-from typing import Dict, List
+import re
+from typing import Dict, Generator, List
 
-from azure.ai.textanalytics import TextAnalyticsClient
+from azure.ai.textanalytics import (
+    DocumentError,
+    RecognizeEntitiesResult,
+    TextAnalyticsClient,
+)
 from azure.core.credentials import AzureKeyCredential
+from loguru import logger
 
 from xraygpt.splitter import sillySplit
 
 
-def recognize_entities(reviews: List[str]) -> None:
+def _recognize_entities(
+    text_analytics_client: TextAnalyticsClient, reviews: List[str]
+) -> Generator[RecognizeEntitiesResult | DocumentError, None, None]:
+    for r in sillySplit(reviews, 5000):
+        yield text_analytics_client.recognize_entities([r])[0]
+
+
+def recognize_entities(reviews: List[str]) -> set[str]:
     endpoint = os.environ["AZURE_LANGUAGE_ENDPOINT"]
     key = os.environ["AZURE_LANGUAGE_KEY"]
+    persons = set()
 
     text_analytics_client = TextAnalyticsClient(
         endpoint=endpoint, credential=AzureKeyCredential(key)
     )
 
-    reviews = list(sillySplit(reviews, 5000))
-    result_raw = [text_analytics_client.recognize_entities([r])[0] for r in reviews]
-    result = [review for review in result_raw if not review.is_error]
-    result_error = [review for review in result_raw if review.is_error]
-    for error in result_error:
-        print("Error: ", error["error"])
-    related_to_reviews: Dict[str, List[str]] = {}
+    persons = set()
 
-    for idx, review in enumerate(result):
+    for review in _recognize_entities(text_analytics_client, reviews):
+        if review.is_error:
+            print("Error: ", review["error"])
+            continue
+
+
         for entity in review.entities:
-            print(f"Entity '{entity.text}' has category '{entity.category}'")
-            related_to_reviews.setdefault(entity.text, [])
-            related_to_reviews[entity.text].append(reviews[idx])
+            if entity.category == "Person" and entity.text not in persons:
+                logger.info("Person: {}", entity.text)
+                persons.add(entity.text)
+
+    return persons
 
 
 if __name__ == "__main__":

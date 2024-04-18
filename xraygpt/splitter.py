@@ -1,5 +1,5 @@
 import itertools
-from typing import List, Generator
+from typing import Generator, List
 
 
 def sillySplit(strs: List[str], max_len) -> Generator[str, None, None]:
