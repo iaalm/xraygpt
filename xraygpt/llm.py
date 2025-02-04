@@ -11,7 +11,7 @@ def get_llm() -> ChatOpenAI:
         "api_key": environ["OPENAI_API_KEY"],
         "api_version": environ.get("OPENAI_API_VERSION", "2020-05-03"),
     }
-    model_id = "chatgpt"
+    model_id = "gpt-4o-mini"
     llm: ChatOpenAI
     if "AZURE_OPENAI_ENDPOINT" in environ:
         logger.info(f"Using AzureOpenAI {model_id}")
