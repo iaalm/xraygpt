@@ -28,6 +28,7 @@ classifiers = [
 dependencies = [
   "langchain",
   "langchain_openai",
+  "langchain-chroma",
   "loguru",
   "ebooklib",
   "BeautifulSoup4",

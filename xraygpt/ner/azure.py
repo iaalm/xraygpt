@@ -38,7 +38,7 @@ def recognize_entities(reviews: List[str]) -> set[str]:
 
         for entity in review.entities:
             if entity.category == "Person" and entity.text not in persons:
-                logger.info("Person: {}", entity.text)
+                logger.debug("Person: {}", entity.text)
                 persons.add(entity.text)
 
     return persons
