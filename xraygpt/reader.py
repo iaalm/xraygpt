@@ -4,7 +4,7 @@ from ebooklib import ITEM_DOCUMENT, epub
 
 class EPubReader:
     def __init__(self, filename):
-        self.book = epub.read_epub(filename)
+        self.book = epub.read_epub(filename, {"ignore_ncx": True})
 
     def __iter__(self):
         self.it = self.book.get_items_of_type(ITEM_DOCUMENT)

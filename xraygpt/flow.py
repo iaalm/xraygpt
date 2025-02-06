@@ -20,7 +20,7 @@ def epubPeopleFlow(filename):
     db = ChromaDatabase(ebd)
 
     for item in EPubReader(filename):
-        logger.debug(item)
+        # logger.debug(item)
         recognize_entities(item, llm, db)
 
     for i in db.dump():
