@@ -1,4 +1,5 @@
 from loguru import logger
+import shelve
 
 from xraygpt.db.chroma import ChromaDatabase
 from xraygpt.llm import get_ebd, get_llm
@@ -15,13 +16,19 @@ def epubSummaryFlow(filename):
 
 
 def epubPeopleFlow(filename):
+    state = shelve.open("workdir/state.shelve")
     llm = get_llm()
     ebd = get_ebd()
     db = ChromaDatabase(ebd)
 
-    for item in EPubReader(filename):
+    for ix, item in enumerate(EPubReader(filename)):
+        if ix <= state.get("last_processed", -1):
+            logger.info(f"Skipping {ix}")
+            continue
         # logger.debug(item)
         recognize_entities(item, llm, db)
+
+        state["last_processed"] = ix
 
     for i in db.dump():
         print(i["name"])

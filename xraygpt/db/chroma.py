@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from uuid import uuid4
 from langchain_openai import OpenAIEmbeddings
 import chromadb
@@ -8,9 +8,12 @@ from xraygpt.db.base import Database, Item
 SPLITTER = "|"
 
 class ChromaDatabase(Database):
-    def __init__(self, llm: OpenAIEmbeddings):
+    def __init__(self, llm: OpenAIEmbeddings, path: Optional[str]=None):
         self.llm = llm
-        client = chromadb.Client()
+        if path is not None:
+            client = chromadb.PersistentClient(path=path)
+        else:
+            client = chromadb.Client()
         self.collection = client.create_collection("people")
 
     def add(self, item: Item):
