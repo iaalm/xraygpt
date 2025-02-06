@@ -14,7 +14,7 @@ class ChromaDatabase(Database):
             client = chromadb.PersistentClient(path=path)
         else:
             client = chromadb.Client()
-        self.collection = client.create_collection("people")
+        self.collection = client.get_or_create_collection("people")
 
     def add(self, item: Item):
         new_id = uuid4().hex

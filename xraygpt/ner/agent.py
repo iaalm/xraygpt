@@ -58,6 +58,8 @@ def _refine_recognized_entity(text: str, name: str, items: List[Item], llm) -> T
     resp = chain.invoke({"text": text, "name": name, "reference": reference_description})
     logger.trace("Reference description: {reference_description}", reference_description=reference_description)
     logger.debug("{num_items} to delete", num_items=len(resp["to_delete"]))
+    if len(resp["to_delete"]) > 0:
+        logger.debug("Items to delete: {items}", items=resp["to_delete"])
 
     item_to_add = None
     if resp["entity_name"]:
@@ -65,7 +67,7 @@ def _refine_recognized_entity(text: str, name: str, items: List[Item], llm) -> T
     else:
         logger.warning("No item to add")
 
-    return [items[i]["id"] for i in resp["to_delete"]], item_to_add
+    return [items[i]["id"] for i in resp["to_delete"] if i < len(items)], item_to_add
 
 def recognize_entities(text: str, llm: ChatOpenAI, db):
     items = _gross_recognize_entities(text, llm)

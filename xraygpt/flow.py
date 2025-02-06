@@ -19,7 +19,7 @@ def epubPeopleFlow(filename):
     state = shelve.open("workdir/state.shelve")
     llm = get_llm()
     ebd = get_ebd()
-    db = ChromaDatabase(ebd)
+    db = ChromaDatabase(ebd, "workdir/db.chroma")
 
     for ix, item in enumerate(EPubReader(filename)):
         if ix <= state.get("last_processed", -1):
