@@ -13,7 +13,7 @@ from loguru import logger
 from xraygpt.db.base import Item
 
 
-def _gross_recognize_entities(text: str, llm: ChatOpenAI) -> List[str]:
+async def _gross_recognize_entities(text: str, llm: ChatOpenAI) -> List[str]:
     # Define the prompt with a structured JSON schema
     response_schemas = [
         ResponseSchema(
@@ -38,12 +38,12 @@ def _gross_recognize_entities(text: str, llm: ChatOpenAI) -> List[str]:
 
     chain = chat_template | llm | output_parser
 
-    resp = chain.invoke({"text": text})
+    resp = await chain.ainvoke({"text": text})
     logger.debug("{num_items} items recognized grossly", num_items=len(resp["item"]))
     return resp["item"]
 
 
-def _refine_recognized_entity(
+async def _refine_recognized_entity(
     text: str, name: str, items: List[Item], llm
 ) -> Tuple[List[str], Optional[Item]]:
     logger.debug(
@@ -117,11 +117,11 @@ def _refine_recognized_entity(
     return item_to_delete, item_to_add
 
 
-def recognize_entities(text: str, llm: ChatOpenAI, db):
+async def recognize_entities(text: str, llm: ChatOpenAI, db):
     items = _gross_recognize_entities(text, llm)
     for i in items:
         related = db.query(i)
-        to_delete, to_add = _refine_recognized_entity(text, i, related, llm)
+        to_delete, to_add = await _refine_recognized_entity(text, i, related, llm)
         for d in to_delete:
             db.delete(Item(id=d, name=[], description=""))
 

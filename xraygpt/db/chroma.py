@@ -11,7 +11,7 @@ SPLITTER = "|"
 
 
 class ChromaDatabase(Database):
-    def __init__(self, llm: OpenAIEmbeddings, path: Optional[str] = None):
+    def __init__(self, llm: Optional[OpenAIEmbeddings], path: Optional[str] = None):
         self.llm = llm
         if path is not None:
             client = chromadb.PersistentClient(path=path)
@@ -20,6 +20,8 @@ class ChromaDatabase(Database):
         self.collection = client.get_or_create_collection("people")
 
     def add(self, item: Item):
+        if self.llm is None:
+            raise ValueError("LLM is not set")
         new_id = uuid4().hex
         keys = SPLITTER.join(item["name"])
         logger.info("Adding item {name} with id {id}", name=keys, id=new_id)
@@ -36,6 +38,8 @@ class ChromaDatabase(Database):
         self.collection.delete(ids=[item["id"]])
 
     def query(self, name: str, n=3) -> List[Item]:
+        if self.llm is None:
+            raise ValueError("LLM is not set")
         embedding = self.llm.embed_query(name)
         results = self.collection.query(embedding, n_results=n)
         return [

@@ -48,7 +48,7 @@ def main() -> None:
 
     config_log_level(args.v)
 
-    flowname_map[args.f](args.filename)
+    asyncio.run(flowname_map[args.f](args.filename))
 
 
 if __name__ == "__main__":

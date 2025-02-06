@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from xraygpt.db.chroma import ChromaDatabase
@@ -32,7 +33,8 @@ def dumpDatabese(filename: str, db: ChromaDatabase):
         )
 
 
-def peakDatabase(filename: str):
+async def peakDatabase(filename: str):
+    await asyncio.sleep(0)
     db = ChromaDatabase(None, filename + ".chroma")
     data = db.dump()
     for i in data:
@@ -42,7 +44,3 @@ def peakDatabase(filename: str):
 
     print("Total items:", len(data))
     dumpDatabese(filename, db)
-
-
-if __name__ == "__main__":
-    printDatabase("workdir/InfiniteJest.epub")

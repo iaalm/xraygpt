@@ -18,7 +18,7 @@ def epubSummaryFlow(filename):
         logger.info(f"# people found so far: {len(people)}")
 
 
-def epubPeopleFlow(filename):
+async def epubPeopleFlow(filename):
     state = shelve.open(filename + ".shelve")
     llm = get_llm()
     ebd = get_ebd()
@@ -30,12 +30,8 @@ def epubPeopleFlow(filename):
             logger.debug(f"Skipping {ix}")
             continue
         # logger.debug(item)
-        recognize_entities(item, llm, db)
+        await recognize_entities(item, llm, db)
 
         state["last_processed"] = ix
 
     dumpDatabese(filename, db)
-
-
-if __name__ == "__main__":
-    print(epubPeopleFlow("workdir/InfiniteJest.epub"))
