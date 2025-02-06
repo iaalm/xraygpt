@@ -1,7 +1,38 @@
+import json
+
 from xraygpt.db.chroma import ChromaDatabase
 
 
-def printDatabase(filename):
+def dumpDatabese(filename: str, db: ChromaDatabase):
+    json_filename = filename[: filename.rindex(".")] + ".json"
+    data = db.dump()
+    # {"characters":	{"Character1 Name":	{"description": "Character1 Description",
+    #               		     "aliases": ["Character1 Alias1", ...]},
+    #                    "Character2 Name":	{"description": "Character2 Description",
+    #               		     "aliases": ["Character1 Alias2", ...]},
+    #  ...},
+    # "settings": 	{"Setting1 Name":	{"description": "Setting1 Description",
+    #                       		    "aliases": ["Setting1 Alias1", ...]}
+    #  ...},
+    # "quotes":	["Quote1",
+    #         	 "Quote2",
+    #  ...]}
+
+    characters = {
+        i["name"][0]: {"description": i["description"], "aliases": i["name"][1:]}
+        for i in data
+    }
+
+    with open(json_filename, "w") as fp:
+        json.dump(
+            {"characters": characters, "settings": {}, "quotes": []},
+            fp,
+            indent=4,
+            ensure_ascii=False,
+        )
+
+
+def peakDatabase(filename: str):
     db = ChromaDatabase(None, filename + ".chroma")
     data = db.dump()
     for i in data:
@@ -10,6 +41,7 @@ def printDatabase(filename):
         print("=" * 80)
 
     print("Total items:", len(data))
+    dumpDatabese(filename, db)
 
 
 if __name__ == "__main__":

@@ -1,11 +1,12 @@
 import shelve
-from tqdm import tqdm
 
 from loguru import logger
+from tqdm import tqdm
 
 from xraygpt.db.chroma import ChromaDatabase
 from xraygpt.llm import get_ebd, get_llm
 from xraygpt.ner.agent import recognize_entities
+from xraygpt.output import dumpDatabese
 from xraygpt.reader import EPubReader
 
 
@@ -33,10 +34,7 @@ def epubPeopleFlow(filename):
 
         state["last_processed"] = ix
 
-    for i in db.dump():
-        print(i["name"])
-        print(i["description"])
-        print("=" * 80)
+    dumpDatabese(filename, db)
 
 
 if __name__ == "__main__":

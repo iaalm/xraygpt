@@ -7,11 +7,11 @@ from loguru import logger
 
 from xraygpt.__about__ import __version__
 from xraygpt.flow import epubPeopleFlow
-from xraygpt.output import printDatabase
+from xraygpt.output import peakDatabase
 
 flowname_map = {
     "people": epubPeopleFlow,
-    "peak": printDatabase,
+    "peak": peakDatabase,
 }
 
 
