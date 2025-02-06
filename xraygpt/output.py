@@ -22,6 +22,7 @@ def dumpDatabese(filename: str, db: ChromaDatabase):
     characters = {
         i["name"][0]: {"description": i["description"], "aliases": i["name"][1:]}
         for i in data
+        if i["frequency"] > 1
     }
 
     with open(json_filename, "w") as fp:
@@ -38,7 +39,7 @@ async def peakDatabase(filename: str):
     db = ChromaDatabase(None, filename + ".chroma")
     data = db.dump()
     for i in data:
-        print(i["name"])
+        print(i["name"], i["frequency"])
         print(i["description"])
         print("=" * 80)
 

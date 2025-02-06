@@ -96,7 +96,6 @@ async def _refine_recognized_entity(
         "Reference description: {reference_description}",
         reference_description=reference_description,
     )
-    logger.debug("{num_items} to delete", num_items=len(resp["to_delete"]))
     to_delete = [i for i in resp["to_delete"] if i < len(items)]
     if len(to_delete) != len(resp["to_delete"]):
         logger.warning(
@@ -105,11 +104,14 @@ async def _refine_recognized_entity(
     item_to_delete = [items[i]["id"] for i in to_delete]
     name_to_delete = [items[i]["name"] for i in to_delete]
     logger.debug("Items to delete: {name_to_delete}", name_to_delete=name_to_delete)
+    frequency = sum([items[i]["frequency"] for i in to_delete]) + 1
 
     item_to_add = None
     if resp["entity_name"]:
+        logger.debug("Adding new item {name}", name=resp["entity_name"])
         item_to_add = Item(
-            id="", name=resp["entity_name"], description=resp["entity_description"]
+            id="", name=resp["entity_name"], description=resp["entity_description"],
+            frequency=frequency
         )
     else:
         logger.warning("No item to add")
@@ -123,7 +125,7 @@ async def recognize_entities(text: str, llm: ChatOpenAI, db):
         related = db.query(i)
         to_delete, to_add = await _refine_recognized_entity(text, i, related, llm)
         for d in to_delete:
-            db.delete(Item(id=d, name=[], description=""))
+            db.delete(Item(id=d, name=[], description="", frequency=0))
 
         if to_add:
             db.add(to_add)

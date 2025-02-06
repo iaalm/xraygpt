@@ -6,6 +6,7 @@ class Item(TypedDict):
     id: str
     name: List[str]
     description: str
+    frequency: int
 
 
 class Database:
