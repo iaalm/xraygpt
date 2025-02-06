@@ -10,7 +10,7 @@ pip install xraygpt
 python -m xraygpt [epub_file]
 ```
 
-## LLM Support
+## 🤖 LLM Support
 
 Current this tool only support OpenAI and Azure OpenAI by setting environment variables.
 
