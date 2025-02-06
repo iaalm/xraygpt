@@ -1,4 +1,5 @@
 import shelve
+from tqdm import tqdm
 
 from loguru import logger
 
@@ -21,10 +22,11 @@ def epubPeopleFlow(filename):
     llm = get_llm()
     ebd = get_ebd()
     db = ChromaDatabase(ebd, filename + ".chroma")
+    book = EPubReader(filename)
 
-    for ix, item in enumerate(EPubReader(filename)):
+    for ix, item in enumerate(tqdm(book, total=len(book))):
         if ix <= state.get("last_processed", -1):
-            logger.info(f"Skipping {ix}")
+            logger.debug(f"Skipping {ix}")
             continue
         # logger.debug(item)
         recognize_entities(item, llm, db)
