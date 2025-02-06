@@ -47,7 +47,7 @@ async def _refine_recognized_entity(
     text: str, name: str, items: List[Item], llm
 ) -> Tuple[List[str], Optional[Item]]:
     logger.debug(
-        "Refining recognized entity: {name} with {num_items}",
+        "Refining recognized entity: {name} with {num_items} references",
         name=name,
         num_items=len(items),
     )
@@ -118,7 +118,7 @@ async def _refine_recognized_entity(
 
 
 async def recognize_entities(text: str, llm: ChatOpenAI, db):
-    items = _gross_recognize_entities(text, llm)
+    items = await _gross_recognize_entities(text, llm)
     for i in items:
         related = db.query(i)
         to_delete, to_add = await _refine_recognized_entity(text, i, related, llm)

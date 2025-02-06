@@ -1,5 +1,6 @@
 import shelve
 
+from langchain_community.callbacks import get_openai_callback
 from loguru import logger
 from tqdm import tqdm
 
@@ -30,8 +31,13 @@ async def epubPeopleFlow(filename):
             logger.debug(f"Skipping {ix}")
             continue
         # logger.debug(item)
-        await recognize_entities(item, llm, db)
+        with get_openai_callback() as cb:
+            await recognize_entities(item, llm, db)
+            logger.trace(f"Total tokens: {cb.total_tokens}")
+            state["total_tokens"] = cb.total_tokens + state.get("total_tokens", 0)
 
         state["last_processed"] = ix
+
+    logger.success("Total tokens: {total_tokens}", total_tokens=state.get('total_tokens', 0))
 
     dumpDatabese(filename, db)
