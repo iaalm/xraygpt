@@ -1,14 +1,17 @@
 from typing import List, Optional
 from uuid import uuid4
-from langchain_openai import OpenAIEmbeddings
+
 import chromadb
+from langchain_openai import OpenAIEmbeddings
 from loguru import logger
+
 from xraygpt.db.base import Database, Item
 
 SPLITTER = "|"
 
+
 class ChromaDatabase(Database):
-    def __init__(self, llm: OpenAIEmbeddings, path: Optional[str]=None):
+    def __init__(self, llm: OpenAIEmbeddings, path: Optional[str] = None):
         self.llm = llm
         if path is not None:
             client = chromadb.PersistentClient(path=path)
@@ -35,10 +38,18 @@ class ChromaDatabase(Database):
     def query(self, name: str, n=3) -> List[Item]:
         embedding = self.llm.embed_query(name)
         results = self.collection.query(embedding, n_results=n)
-        return [Item(id=ix, name=meta["keys"].split(SPLITTER), description=doc) for ix, doc, meta in zip(results["ids"][0], results["documents"][0], results["metadatas"][0])]
+        return [
+            Item(id=ix, name=meta["keys"].split(SPLITTER), description=doc)
+            for ix, doc, meta in zip(
+                results["ids"][0], results["documents"][0], results["metadatas"][0]
+            )
+        ]
 
     def dump(self) -> List[Item]:
         results = self.collection.get(include=["documents", "metadatas"])
-        return [Item(id=ix, name=meta["keys"].split(SPLITTER), description=doc) for ix, doc, meta in zip(results["ids"], results["documents"], results["metadatas"])]
-
-
+        return [
+            Item(id=ix, name=meta["keys"].split(SPLITTER), description=doc)
+            for ix, doc, meta in zip(
+                results["ids"], results["documents"], results["metadatas"]
+            )
+        ]

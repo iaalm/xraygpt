@@ -1,7 +1,8 @@
 from xraygpt.db.chroma import ChromaDatabase
 
-def printDatabase():
-    db = ChromaDatabase(None, "workdir/db.chroma")
+
+def printDatabase(filename):
+    db = ChromaDatabase(None, filename + ".chroma")
     data = db.dump()
     for i in data:
         print(i["name"])
@@ -10,5 +11,6 @@ def printDatabase():
 
     print("Total items:", len(data))
 
+
 if __name__ == "__main__":
-    printDatabase()
+    printDatabase("workdir/InfiniteJest.epub")

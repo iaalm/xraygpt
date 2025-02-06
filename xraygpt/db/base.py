@@ -7,6 +7,7 @@ class Item(TypedDict):
     name: List[str]
     description: str
 
+
 class Database:
     @abstractmethod
     def add(self, item: Item) -> None:

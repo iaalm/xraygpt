@@ -1,7 +1,12 @@
 from os import environ
 
 from langchain_core import embeddings
-from langchain_openai import AzureChatOpenAI, AzureOpenAIEmbeddings, ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import (
+    AzureChatOpenAI,
+    AzureOpenAIEmbeddings,
+    ChatOpenAI,
+    OpenAIEmbeddings,
+)
 from loguru import logger
 
 
@@ -27,6 +32,7 @@ def get_llm() -> ChatOpenAI:
             **common_openai_params,  # type: ignore[arg-type]
         )
     return llm
+
 
 def get_ebd() -> OpenAIEmbeddings:
     common_openai_params = {
