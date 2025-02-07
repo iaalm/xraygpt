@@ -34,6 +34,7 @@ async def epubPeopleFlow(filename):
             logger.debug(f"Skipping {ix}")
             continue
         # logger.debug(item)
+        logger.trace("Processing {content}", content=item)
         with get_openai_callback() as cb:
             await recognize_entities(item, llm, db)
             logger.trace(f"Total tokens: {cb.total_tokens}")

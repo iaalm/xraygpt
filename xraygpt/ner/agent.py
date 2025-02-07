@@ -49,9 +49,10 @@ async def _refine_recognized_entity(
     text: str, name: str, items: List[Item], llm
 ) -> Tuple[List[Item], Optional[Item]]:
     logger.debug(
-        "Refining recognized entity: {name} with {num_items} references",
+        "Refining recognized entity: {name} with {num_items} references: {items}",
         name=name,
         num_items=len(items),
+        items=[i["name"] for i in items],
     )
     response_schemas = [
         ResponseSchema(
@@ -74,7 +75,7 @@ async def _refine_recognized_entity(
     chat_template = ChatPromptTemplate(
         messages=[
             SystemMessagePromptTemplate.from_template(
-                'You are an assistant tasked with refining a specific entity from text. Given the some entities description and a text paragraph related to "{name}", your task is to generate or update description for entity "{name}":\n1. If the entity already present as "existing entities" and the text provides more important or detailed information, update the entity by deleting it and adding a new one\n2. If you found multiple "existing entities" are actually same entity, merge them by remove all and add a new one with all their names\n3. if some "existing entities" are not related to "{name}", leave them alone.\n4. Ensure the updated entity name remains accurate. Each entity often have multiple names, e.g. nick name, full name, first name, last name. Put all names you know into "entity_name" and make sure full name as first one\n5. Each related entities are marked with an ID in []. To delete provide the ID in "to_delete"\n6. Provide a simple and concise entity description with less than 100 words. When new infomation appearred for same entity, remove less important information and keep critial infomation like age, relationship, occupation, title, birthday, etc.\n7. DO NOT any information not in context.\nOnly process and output information for the entity "{name}".\nYour output must follow this format: {format_instructions}'
+                'You are an assistant tasked with refining a specific entity from text. Given the some entities description and a text paragraph related to "{name}", your task is to generate or update description for entity "{name}":\n1. If the entity already present as "existing entities" and the text provides more important or detailed information, update the entity by deleting it and adding a new one\n2. If you found multiple "existing entities" are actually same entity, merge them by remove all and add a new one with all their names\n3. if some "existing entities" are not related to "{name}", leave them alone.\n4. Ensure the updated entity name remains accurate. Each entity often have multiple names, e.g. nick name, full name, first name, last name. Put all names you know into "entity_name" and make sure full name as first one\n5. Each related entities are marked with an ID in {{}}. To delete provide the ID in "to_delete"\n6. Provide a simple and concise entity description with less than 100 words. When new infomation appearred for same entity, remove less important information and keep critial infomation like age, relationship, occupation, title, birthday, etc.\n7. DO NOT any information not in context.\nOnly process and output information for the entity "{name}".\nYour output must follow this format: {format_instructions}'
             ),
             HumanMessagePromptTemplate.from_template("Existing entities:\n{reference}"),
             HumanMessagePromptTemplate.from_template("{text}"),
@@ -89,7 +90,7 @@ async def _refine_recognized_entity(
 
     references = [(json.dumps(i["name"], ensure_ascii=False), i["description"]) for i in items]
     reference_description = "\n".join(
-        [f"[{ix}]: {n}: {d}" for ix, (n, d) in enumerate(references)]
+        [f"{{{ix}}}: {n}: {d}" for ix, (n, d) in enumerate(references)]
     )
     resp = chain.invoke(
         {"text": text, "name": name, "reference": reference_description}
@@ -117,7 +118,7 @@ async def _refine_recognized_entity(
         unique.remove(d[0])
         new_name = [d[0]] + unique
 
-        logger.debug("Adding new item {name}", name=new_name)
+        logger.debug("Adding new item {name} {description}", name=new_name, description=resp["entity_description"])
 
         item_to_add = Item(
             id=new_id,
