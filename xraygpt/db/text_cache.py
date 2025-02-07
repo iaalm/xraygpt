@@ -42,19 +42,21 @@ class TextCache(Database):
     def _add_cache(self, item: Item) -> None:
         self.item_cache[item["id"]] = deepcopy(item)
         for i in item["name"]:
-            if i not in self.name_cache:
+            if i not in self.name_cache or self.name_cache[i] is None:
                 self.name_cache[i] = [item["id"]]
-            else:
+            elif item["id"] in self.name_cache[i]:
                 logger.warning("Duplicate name found in cache: {name}", name=i)
                 self.name_cache[i].append(item["id"])
+            else:
+                logger.warning("Duplicate item found in cache name {name}", name=i)
 
     def _delete_cache(self, item: Item) -> None:
         del self.item_cache[item["id"]]
         for i in item["name"]:
-            if len(self.name_cache[i]) == 1:
+            # name_cache many contain duplicate id
+            self.name_cache[i] = [j for j in self.name_cache[i] if j != item["id"]]
+            if len(self.name_cache[i]) == 0:
                 del self.name_cache[i]
-            else:
-                self.name_cache[i].remove(item["id"])
 
     def _query_cache(self, name: str) -> List[Item]:
         if name in self.name_cache:
