@@ -42,7 +42,12 @@ class ChromaDatabase(Database):
         embedding = self.llm.embed_query(name)
         results = self.collection.query(embedding, n_results=n)
         return [
-            Item(id=ix, name=meta["keys"].split(SPLITTER), description=doc, frequency=meta["frequency"])
+            Item(
+                id=ix,
+                name=meta["keys"].split(SPLITTER),
+                description=doc,
+                frequency=meta["frequency"],
+            )
             for ix, doc, meta in zip(
                 results["ids"][0], results["documents"][0], results["metadatas"][0]
             )
@@ -51,7 +56,12 @@ class ChromaDatabase(Database):
     def dump(self) -> List[Item]:
         results = self.collection.get(include=["documents", "metadatas"])
         data = [
-            Item(id=ix, name=meta["keys"].split(SPLITTER), description=doc, frequency=meta["frequency"])
+            Item(
+                id=ix,
+                name=meta["keys"].split(SPLITTER),
+                description=doc,
+                frequency=meta["frequency"],
+            )
             for ix, doc, meta in zip(
                 results["ids"], results["documents"], results["metadatas"]
             )

@@ -5,6 +5,7 @@ from loguru import logger
 from tqdm import tqdm
 
 from xraygpt.db.chroma import ChromaDatabase
+from xraygpt.db.text_cache import TextCache
 from xraygpt.llm import get_ebd, get_llm
 from xraygpt.ner.agent import recognize_entities
 from xraygpt.output import dumpDatabese
@@ -23,7 +24,8 @@ async def epubPeopleFlow(filename):
     state = shelve.open(filename + ".shelve")
     llm = get_llm()
     ebd = get_ebd()
-    db = ChromaDatabase(ebd, filename + ".chroma")
+    raw_db = ChromaDatabase(ebd, filename + ".chroma")
+    db = TextCache(raw_db)
     book = EPubReader(filename)
 
     bar = tqdm(book, total=len(book))
