@@ -1,3 +1,4 @@
+import json
 from typing import List, Optional, Tuple
 from uuid import uuid4
 
@@ -73,9 +74,9 @@ async def _refine_recognized_entity(
     chat_template = ChatPromptTemplate(
         messages=[
             SystemMessagePromptTemplate.from_template(
-                'You are an assistant tasked with refining a specific entity from text. Given the recognized entity "{name}" and related database information, your tasks are:\n1. Identify if the entity "{name}" is incorrect, irrelevant, or outdated, and mark it for deletion if necessary.\n2. Update the entity by deleting all entity refer to same entity and adding a new entry if the text provides more important or detailed information, or multipy entity turn out to be same entity.\n3. Ensure the updated entity name remains accurate. Each eneity often have multipy names, e.g. nick name, full name, first name, last name. Put all names you know into "eneity_name" and put full name as first one\n4. Each related entitys are marked with an ID in []. To delete provide the ID in "to_delete"\n5. Provide a simple and concise entity description with less than 100 words. When new infomation appearred for same entity, remove less important information and keep critial infomation like age, relationship, occupation, title, birthday, etc.\\nOnly process and output information for the entity "{name}".\nYour output must follow this format: {format_instructions}'
+                'You are an assistant tasked with refining a specific entity from text. Given the recognized entity "{name}" and related database information, your tasks are:\n1. Identify if the entity "{name}" is incorrect, irrelevant, or outdated, and mark it for deletion if necessary.\n2. If the text provides more important or detailed information, update the entity by deleting it and adding a new one\n3. If you found multiple "existing entity" are actually same entity, merge them by remove all and add a new one with all their names\n4. Ensure the updated entity name remains accurate. Each eneity often have multiple names, e.g. nick name, full name, first name, last name. Put all names you know into "eneity_name" and make sure full name as first one\n5. Each related entities are marked with an ID in []. To delete provide the ID in "to_delete"\n6. Provide a simple and concise entity description with less than 100 words. When new infomation appearred for same entity, remove less important information and keep critial infomation like age, relationship, occupation, title, birthday, etc.\\nOnly process and output information for the entity "{name}".\nYour output must follow this format: {format_instructions}'
             ),
-            HumanMessagePromptTemplate.from_template("Existing entity: {reference}"),
+            HumanMessagePromptTemplate.from_template("Existing entity:\n{reference}"),
             HumanMessagePromptTemplate.from_template("{text}"),
         ],
         input_variables=["text", "name", "reference"],
@@ -86,7 +87,7 @@ async def _refine_recognized_entity(
 
     chain = chat_template | llm | output_parser
 
-    references = [(",".join(i["name"]), i["description"]) for i in items]
+    references = [(json.dumps(i["name"]), i["description"]) for i in items]
     reference_description = "\n".join(
         [f"[{ix}]: {n}: {d}" for ix, (n, d) in enumerate(references)]
     )
