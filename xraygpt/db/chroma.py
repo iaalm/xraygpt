@@ -22,15 +22,14 @@ class ChromaDatabase(Database):
     def add(self, item: Item):
         if self.llm is None:
             raise ValueError("LLM is not set")
-        new_id = uuid4().hex
         keys = SPLITTER.join(item["name"])
-        logger.trace("Adding item {name} with id {id}", name=keys, id=new_id)
+        logger.trace("Adding item {name} with id {id}", name=keys, id=item["id"])
         embedding = self.llm.embed_query(item["description"])
         self.collection.add(
             documents=[item["description"]],
             embeddings=[embedding],
             metadatas=[{"keys": keys, "frequency": item["frequency"]}],
-            ids=[new_id],
+            ids=[item["id"]],
         )
 
     def delete(self, item: Item):
@@ -51,9 +50,10 @@ class ChromaDatabase(Database):
 
     def dump(self) -> List[Item]:
         results = self.collection.get(include=["documents", "metadatas"])
-        return [
+        data = [
             Item(id=ix, name=meta["keys"].split(SPLITTER), description=doc, frequency=meta["frequency"])
             for ix, doc, meta in zip(
                 results["ids"], results["documents"], results["metadatas"]
             )
         ]
+        return sorted(data, key=lambda x: x["frequency"], reverse=True)

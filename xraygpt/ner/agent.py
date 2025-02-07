@@ -1,3 +1,4 @@
+from uuid import uuid4
 from typing import List, Optional, Tuple
 
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
@@ -45,7 +46,7 @@ async def _gross_recognize_entities(text: str, llm: ChatOpenAI) -> List[str]:
 
 async def _refine_recognized_entity(
     text: str, name: str, items: List[Item], llm
-) -> Tuple[List[str], Optional[Item]]:
+) -> Tuple[List[Item], Optional[Item]]:
     logger.debug(
         "Refining recognized entity: {name} with {num_items} references",
         name=name,
@@ -101,16 +102,17 @@ async def _refine_recognized_entity(
         logger.warning(
             "Some items to delete are invalid: {to_delete}", to_delete=resp["to_delete"]
         )
-    item_to_delete = [items[i]["id"] for i in to_delete]
-    name_to_delete = [items[i]["name"] for i in to_delete]
+    item_to_delete = [items[i] for i in to_delete]
+    name_to_delete = [i["name"] for i in item_to_delete]
     logger.debug("Items to delete: {name_to_delete}", name_to_delete=name_to_delete)
-    frequency = sum([items[i]["frequency"] for i in to_delete]) + 1
+    frequency = sum([i["frequency"] for i in item_to_delete]) + 1
 
     item_to_add = None
     if resp["entity_name"]:
         logger.debug("Adding new item {name}", name=resp["entity_name"])
+        new_id = uuid4().hex
         item_to_add = Item(
-            id="", name=resp["entity_name"], description=resp["entity_description"],
+            id=new_id, name=resp["entity_name"], description=resp["entity_description"],
             frequency=frequency
         )
     else:
@@ -125,7 +127,7 @@ async def recognize_entities(text: str, llm: ChatOpenAI, db):
         related = db.query(i)
         to_delete, to_add = await _refine_recognized_entity(text, i, related, llm)
         for d in to_delete:
-            db.delete(Item(id=d, name=[], description="", frequency=0))
+            db.delete(d)
 
         if to_add:
             db.add(to_add)
