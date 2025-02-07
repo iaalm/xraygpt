@@ -19,6 +19,8 @@ def dumpDatabese(filename: str, db: ChromaDatabase):
     #         	 "Quote2",
     #  ...]}
 
+    # item only occurs in one chapter is not necessary to add,
+    # This also helps to filter out celebrity's names.
     characters = {
         i["name"][0]: {"description": i["description"], "aliases": i["name"][1:]}
         for i in data

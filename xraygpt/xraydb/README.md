@@ -1,8 +1,10 @@
 # X-Ray DB adaptor lib
 
+X-Ray operates like a concordance for kindle device, listing most commonly used character names, locations, themes, or ideas, which are sorted into the two main categories of "People" and "Terms".
+
 
 ## X-Ray DB file
-Assume you have a file named `name.epub`, then the X-Ray DB file should be store as name/XRAY.entities.{ASIN}.asc, with [ASIN](https://en.wikipedia.org/wiki/Amazon_Standard_Identification_Number) of the book. This file is a sqlite3 database file.
+Assume you have a file named `name.epub`, then the X-Ray DB file should be store as name.sdr/XRAY.entities.{ASIN}.asc, with [ASIN](https://en.wikipedia.org/wiki/Amazon_Standard_Identification_Number) of the book. This file is a sqlite3 database file.
 
 
 ## DB schema
