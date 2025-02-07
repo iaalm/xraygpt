@@ -61,7 +61,7 @@ async def _refine_recognized_entity(
         ),
         ResponseSchema(
             name="entity_name",
-            description="Array of entity names of single entity",
+            description="Array of names of the entity to create",
             type="[string]",
         ),
         ResponseSchema(
@@ -74,9 +74,9 @@ async def _refine_recognized_entity(
     chat_template = ChatPromptTemplate(
         messages=[
             SystemMessagePromptTemplate.from_template(
-                'You are an assistant tasked with refining a specific entity from text. Given the recognized entity "{name}" and related database information, your tasks are:\n1. Identify if the entity "{name}" is incorrect, irrelevant, or outdated, and mark it for deletion if necessary.\n2. If the text provides more important or detailed information, update the entity by deleting it and adding a new one\n3. If you found multiple "existing entity" are actually same entity, merge them by remove all and add a new one with all their names\n4. Ensure the updated entity name remains accurate. Each eneity often have multiple names, e.g. nick name, full name, first name, last name. Put all names you know into "eneity_name" and make sure full name as first one\n5. Each related entities are marked with an ID in []. To delete provide the ID in "to_delete"\n6. Provide a simple and concise entity description with less than 100 words. When new infomation appearred for same entity, remove less important information and keep critial infomation like age, relationship, occupation, title, birthday, etc.7. DO NOT any information not in context.\nOnly process and output information for the entity "{name}".\nYour output must follow this format: {format_instructions}'
+                'You are an assistant tasked with refining a specific entity from text. Given the some entities description and a text paragraph related to "{name}", your task is to generate or update description for entity "{name}":\n1. If the entity already present as "existing entities" and the text provides more important or detailed information, update the entity by deleting it and adding a new one\n2. If you found multiple "existing entities" are actually same entity, merge them by remove all and add a new one with all their names\n3. if some "existing entities" are not related to "{name}", leave them alone.\n4. Ensure the updated entity name remains accurate. Each entity often have multiple names, e.g. nick name, full name, first name, last name. Put all names you know into "entity_name" and make sure full name as first one\n5. Each related entities are marked with an ID in []. To delete provide the ID in "to_delete"\n6. Provide a simple and concise entity description with less than 100 words. When new infomation appearred for same entity, remove less important information and keep critial infomation like age, relationship, occupation, title, birthday, etc.\n7. DO NOT any information not in context.\nOnly process and output information for the entity "{name}".\nYour output must follow this format: {format_instructions}'
             ),
-            HumanMessagePromptTemplate.from_template("Existing entity:\n{reference}"),
+            HumanMessagePromptTemplate.from_template("Existing entities:\n{reference}"),
             HumanMessagePromptTemplate.from_template("{text}"),
         ],
         input_variables=["text", "name", "reference"],
@@ -87,7 +87,7 @@ async def _refine_recognized_entity(
 
     chain = chat_template | llm | output_parser
 
-    references = [(json.dumps(i["name"]), i["description"]) for i in items]
+    references = [(json.dumps(i["name"], ensure_ascii=False), i["description"]) for i in items]
     reference_description = "\n".join(
         [f"[{ix}]: {n}: {d}" for ix, (n, d) in enumerate(references)]
     )
@@ -109,12 +109,19 @@ async def _refine_recognized_entity(
     frequency = sum([i["frequency"] for i in item_to_delete]) + 1
 
     item_to_add = None
-    if resp["entity_name"]:
-        logger.debug("Adding new item {name}", name=resp["entity_name"])
+    if (d := resp["entity_name"]):
         new_id = uuid4().hex
+
+        # make sure name is unique and keep the first one
+        unique = list(set(d))
+        unique.remove(d[0])
+        new_name = [d[0]] + unique
+
+        logger.debug("Adding new item {name}", name=new_name)
+
         item_to_add = Item(
             id=new_id,
-            name=resp["entity_name"],
+            name=new_name,
             description=resp["entity_description"],
             frequency=frequency,
         )

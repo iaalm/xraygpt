@@ -44,7 +44,7 @@ class TextCache(Database):
         for i in item["name"]:
             if i not in self.name_cache or self.name_cache[i] is None:
                 self.name_cache[i] = [item["id"]]
-            elif item["id"] in self.name_cache[i]:
+            elif item["id"] not in self.name_cache[i]:
                 logger.warning("Duplicate name found in cache: {name}", name=i)
                 self.name_cache[i].append(item["id"])
             else:
@@ -54,7 +54,9 @@ class TextCache(Database):
         del self.item_cache[item["id"]]
         for i in item["name"]:
             # name_cache many contain duplicate id
-            self.name_cache[i] = [j for j in self.name_cache.get(i, []) if j != item["id"]]
+            self.name_cache[i] = [
+                j for j in self.name_cache.get(i, []) if j != item["id"]
+            ]
             if len(self.name_cache[i]) == 0:
                 del self.name_cache[i]
 

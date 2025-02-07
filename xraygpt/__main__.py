@@ -36,7 +36,7 @@ def config_log_level(v: int) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="xxy-" + __version__)
+    parser = argparse.ArgumentParser(description="X-Ray GPT " + __version__)
     parser.add_argument("-v", action="count", default=0, help="verbose level.")
     parser.add_argument("filename", help="input file name.")
     parser.add_argument(
