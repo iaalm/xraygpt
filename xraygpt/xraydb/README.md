@@ -24,6 +24,66 @@ CREATE INDEX idx_entity_excerpt ON entity_excerpt(entity ASC);
 CREATE INDEX idx_entity_type ON entity(type ASC);
 ```
 
+### Explanation
+#### String
+store all cross language string. Other tables can reference this table.
+
+#### Entity
+- label: entity name
+- loc\_label: localized entity name, reference to string table
+- type: entity type, reference to type tables
+- count: entity occurrence count
+- has\_info\_card:
+
+#### Entity description
+- text: entity description
+- source\_wildcard:
+- source: reference to source table
+- entity: reference to entity table
+
+#### Source
+- label: source name
+- url: source url, reference to string table
+- license\_label: license name, reference to string table
+- license\_url: license url, reference to string tables
+
+#### Occurrence
+- entity: reference to entity tables
+- start: start position of entity in books
+- length: length of entity in books
+
+#### Entity excerpt
+- entity: reference to entity tables
+- excerpt: reference to excerpt tables
+
+#### Excerpt
+- start: start position of excerpt in books
+- length: length of excerpt in books
+- image: image ID in book
+- related\_entities: related entities, reference to entity tables
+- goto: click imaege to go to char position
+
+#### Type
+- label: type name
+- singular\_label:
+- icon:
+- top\_mentioned\_entities: top mentioned entities, reference to entity tables
+
+#### Book metadata
+- srl: fresh start char position
+- erl: end char position
+- has\_images: has images
+- has\_excerpts: has excerpts
+- show\_spoilers\_default: show spoilers default
+- num\_people: number of people
+- num\_terms: number of terms
+- num\_images: number of images
+- preview\_images: preview images reference to excerpt tables
+
+### Kindle location number
+Or "loc" at the bottom of the screen is equal to char postion / 150.
+
+
 ## Reference
 This project highly inspired by:
 [X-Ray Creater](https://github.com/szarroug3/X-Ray_Calibre_Plugin/tree/master)
