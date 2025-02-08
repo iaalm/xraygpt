@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Dict, Generator, List
+from typing import Dict, Generator, List, Set
 
 from azure.ai.textanalytics import (
     DocumentError,
@@ -23,13 +23,12 @@ def _recognize_entities(
 def recognize_entities(reviews: List[str]) -> set[str]:
     endpoint = os.environ["AZURE_LANGUAGE_ENDPOINT"]
     key = os.environ["AZURE_LANGUAGE_KEY"]
-    persons = set()
 
     text_analytics_client = TextAnalyticsClient(
         endpoint=endpoint, credential=AzureKeyCredential(key)
     )
 
-    persons = set()
+    persons: Set[str] = set()
 
     for review in _recognize_entities(text_analytics_client, reviews):
         if review.is_error:

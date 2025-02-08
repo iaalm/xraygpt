@@ -88,7 +88,9 @@ async def _refine_recognized_entity(
 
     chain = chat_template | llm | output_parser
 
-    references = [(json.dumps(i["name"], ensure_ascii=False), i["description"]) for i in items]
+    references = [
+        (json.dumps(i["name"], ensure_ascii=False), i["description"]) for i in items
+    ]
     reference_description = "\n".join(
         [f"{{{ix}}}: {n}: {d}" for ix, (n, d) in enumerate(references)]
     )
@@ -110,7 +112,7 @@ async def _refine_recognized_entity(
     frequency = sum([i["frequency"] for i in item_to_delete]) + 1
 
     item_to_add = None
-    if (d := resp["entity_name"]):
+    if d := resp["entity_name"]:
         new_id = uuid4().hex
 
         # make sure name is unique and keep the first one
@@ -118,7 +120,11 @@ async def _refine_recognized_entity(
         unique.remove(d[0])
         new_name = [d[0]] + unique
 
-        logger.debug("Adding new item {name} {description}", name=new_name, description=resp["entity_description"])
+        logger.debug(
+            "Adding new item {name} {description}",
+            name=new_name,
+            description=resp["entity_description"],
+        )
 
         item_to_add = Item(
             id=new_id,

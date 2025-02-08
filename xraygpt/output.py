@@ -1,10 +1,13 @@
 import asyncio
 import json
 
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+from xraygpt.db.base import Database
 from xraygpt.db.chroma import ChromaDatabase
 
 
-def dumpDatabese(filename: str, db: ChromaDatabase):
+def dumpDatabese(filename: str, db: Database):
     json_filename = filename[: filename.rindex(".")] + ".json"
     data = db.dump()
     # {"characters":	{"Character1 Name":	{"description": "Character1 Description",
@@ -36,9 +39,9 @@ def dumpDatabese(filename: str, db: ChromaDatabase):
         )
 
 
-async def peakDatabase(filename: str):
+async def peakDatabase(filename: str, llm: ChatOpenAI, ebd: OpenAIEmbeddings):
     await asyncio.sleep(0)
-    db = ChromaDatabase(None, filename + ".chroma")
+    db = ChromaDatabase(ebd, filename + ".chroma")
     data = db.dump()
     for i in data:
         print(i["name"], i["frequency"])

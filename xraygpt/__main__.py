@@ -7,6 +7,7 @@ from loguru import logger
 
 from xraygpt.__about__ import __version__
 from xraygpt.flow import epubPeopleFlow
+from xraygpt.llm import get_ebd, get_llm
 from xraygpt.output import peakDatabase
 
 flowname_map = {
@@ -42,13 +43,22 @@ def main() -> None:
     parser.add_argument(
         "-f", help="flow name", choices=flowname_map.keys(), default="people"
     )
+    parser.add_argument(
+        "--embedding_model",
+        default="text-embedding-ada-002",
+        help="embedding model name",
+    )
+    parser.add_argument("--chat_model", default="gpt-4o-mini", help="chat model name")
 
     # create the parser for the "foo" command
     args = parser.parse_args()
 
     config_log_level(args.v)
 
-    asyncio.run(flowname_map[args.f](args.filename))
+    llm = get_llm(args.chat_model)
+    ebd = get_ebd(args.embedding_model)
+
+    asyncio.run(flowname_map[args.f](args.filename, llm, ebd))
 
 
 if __name__ == "__main__":

@@ -13,4 +13,4 @@ build:
 format:
 	python3 -m isort --profile black $(ALL_PY)
 	python3 -m black $(ALL_PY)
-	# python3 -m mypy --strict $(ALL_PY)
+	python3 -m mypy $(ALL_PY)

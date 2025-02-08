@@ -1,4 +1,5 @@
 from os import environ
+from typing import Optional
 
 from langchain_core import embeddings
 from langchain_openai import (
@@ -10,13 +11,12 @@ from langchain_openai import (
 from loguru import logger
 
 
-def get_llm() -> ChatOpenAI:
+def get_llm(model_id: str) -> ChatOpenAI:
     common_openai_params = {
         "temperature": 0,
         "api_key": environ["OPENAI_API_KEY"],
         "api_version": environ.get("OPENAI_API_VERSION", "2020-05-03"),
     }
-    model_id = "gpt-4o-mini"
     llm: ChatOpenAI
     if "AZURE_OPENAI_ENDPOINT" in environ:
         logger.info(f"Using AzureOpenAI {model_id}")
@@ -34,12 +34,11 @@ def get_llm() -> ChatOpenAI:
     return llm
 
 
-def get_ebd() -> OpenAIEmbeddings:
+def get_ebd(model_id: str) -> OpenAIEmbeddings:
     common_openai_params = {
         "api_key": environ["OPENAI_API_KEY"],
         "api_version": environ.get("OPENAI_API_VERSION", "2020-05-03"),
     }
-    model_id = "text-embedding-ada-002"
     llm: OpenAIEmbeddings
     if "AZURE_OPENAI_ENDPOINT" in environ:
         logger.info(f"Using AzureOpenAI {model_id}")

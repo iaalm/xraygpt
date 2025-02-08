@@ -19,7 +19,7 @@ class Database:
         pass
 
     @abstractmethod
-    def query(self, name: str) -> List[Item]:
+    def query(self, name: str, n: int) -> List[Item]:
         pass
 
     @abstractmethod

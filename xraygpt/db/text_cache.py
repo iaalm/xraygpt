@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import List
+from typing import Dict, List
 
 from loguru import logger
 
@@ -9,8 +9,8 @@ from xraygpt.db.base import Database, Item
 class TextCache(Database):
     def __init__(self, db: Database):
         self.db = db
-        self.item_cache = {}
-        self.name_cache = {}
+        self.item_cache: Dict[str, Item] = {}
+        self.name_cache: Dict[str, List[str]] = {}
 
         for i in self.db.dump():
             self._add_cache(i)

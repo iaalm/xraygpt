@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from ebooklib import ITEM_DOCUMENT, epub
+from ebooklib import ITEM_DOCUMENT, epub  # type: ignore[import-untyped]
 
 
 class EPubReader:
@@ -24,8 +24,3 @@ class EPubReader:
 
     def __len__(self):
         return sum(1 for _ in self._get_items())
-
-
-if __name__ == "__main__":
-    for item in EPubReader("workdir/InfiniteJest.epub"):
-        print(len(item))
