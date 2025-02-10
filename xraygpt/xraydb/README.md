@@ -59,9 +59,9 @@ store all cross language string. Other tables can reference this table.
 #### Excerpt
 - start: start position of excerpt in books
 - length: length of excerpt in books
-- image: image ID in book
+- image:
 - related\_entities: related entities, reference to entity tables
-- goto: click imaege to go to char position
+- goto: <img> tag byte offset
 
 #### Type
 - label: type name
@@ -70,8 +70,8 @@ store all cross language string. Other tables can reference this table.
 - top\_mentioned\_entities: top mentioned entities, reference to entity tables
 
 #### Book metadata
-- srl: fresh start char position
-- erl: end char position
+- srl: start reading location, where a new book should open for the first time
+- erl: end reading location, where ‘before you go’ page shows
 - has\_images: has images
 - has\_excerpts: has excerpts
 - show\_spoilers\_default: show spoilers default
@@ -81,7 +81,7 @@ store all cross language string. Other tables can reference this table.
 - preview\_images: preview images reference to excerpt tables
 
 ### Kindle location number
-Or "loc" at the bottom of the screen is equal to char postion / 150.
+Or "loc" at the bottom of the screen is equal to byte offset / 150.
 
 
 ## Reference

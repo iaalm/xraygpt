@@ -8,16 +8,17 @@ from langchain_openai import (
     ChatOpenAI,
     OpenAIEmbeddings,
 )
+from langchain_openai.chat_models.base import BaseChatOpenAI
 from loguru import logger
 
 
-def get_llm(model_id: str) -> ChatOpenAI:
+def get_llm(model_id: str) -> BaseChatOpenAI:
     common_openai_params = {
         "temperature": 0,
         "api_key": environ["OPENAI_API_KEY"],
         "api_version": environ.get("OPENAI_API_VERSION", "2020-05-03"),
     }
-    llm: ChatOpenAI
+    llm: BaseChatOpenAI
     if "AZURE_OPENAI_ENDPOINT" in environ:
         logger.info(f"Using AzureOpenAI {model_id}")
         llm = AzureChatOpenAI(

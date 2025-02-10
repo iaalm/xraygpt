@@ -2,6 +2,7 @@ import shelve
 
 from langchain_community.callbacks import get_openai_callback
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai.chat_models.base import BaseChatOpenAI
 from loguru import logger
 from tqdm import tqdm
 
@@ -20,7 +21,7 @@ def epubSummaryFlow(filename):
         logger.info(f"# people found so far: {len(people)}")
 
 
-async def epubPeopleFlow(filename: str, llm: ChatOpenAI, ebd: OpenAIEmbeddings):
+async def epubPeopleFlow(filename: str, llm: BaseChatOpenAI, ebd: OpenAIEmbeddings):
     state = shelve.open(filename + ".shelve")
     raw_db = ChromaDatabase(ebd, filename + ".chroma")
     db = TextCache(raw_db)

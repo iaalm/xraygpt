@@ -10,12 +10,13 @@ from langchain.prompts import (
 )
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_openai import ChatOpenAI
+from langchain_openai.chat_models.base import BaseChatOpenAI
 from loguru import logger
 
 from xraygpt.db.base import Item
 
 
-async def _gross_recognize_entities(text: str, llm: ChatOpenAI) -> List[str]:
+async def _gross_recognize_entities(text: str, llm: BaseChatOpenAI) -> List[str]:
     # Define the prompt with a structured JSON schema
     response_schemas = [
         ResponseSchema(
@@ -138,7 +139,7 @@ async def _refine_recognized_entity(
     return item_to_delete, item_to_add
 
 
-async def recognize_entities(text: str, llm: ChatOpenAI, db):
+async def recognize_entities(text: str, llm: BaseChatOpenAI, db):
     items = await _gross_recognize_entities(text, llm)
     for i in items:
         related = db.query(i)
