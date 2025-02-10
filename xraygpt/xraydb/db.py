@@ -50,12 +50,12 @@ class XRayDb:
     def add_entity(self, entity: Entity) -> int:
         entity_id = self._get_next_id(Table.ENTITY)
         self.db.execute(
-            "INSERT INTO entity(id, label, type, count) VALUES (?, ?, ?, ?);",
+            "INSERT INTO entity(id, label, type, count, has_info_card ) VALUES (?, ?, ?, ?, 1);",
             (entity_id, entity["name"], entity["type"], entity["count"]),
         )
         self.db.execute(
-            "INSERT INTO entity_description(text, source, entity) VALUES (?, ?, ?);",
-            (entity["description"], entity["source"], entity_id),
+            "INSERT INTO entity_description(text, source_wildcard, source, entity) VALUES (?, ?, ?);",
+            (entity["description"], entity["name"], entity["source"], entity_id),
         )
 
         return entity_id

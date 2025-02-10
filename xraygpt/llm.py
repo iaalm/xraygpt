@@ -23,7 +23,7 @@ def get_llm(model_id: str) -> BaseChatOpenAI:
         logger.info(f"Using AzureOpenAI {model_id}")
         llm = AzureChatOpenAI(
             azure_endpoint=environ["AZURE_OPENAI_ENDPOINT"],
-            deployment_name=model_id,
+            azure_deployment=model_id,
             **common_openai_params,  # type: ignore[arg-type,call-arg]
         )
     else:
@@ -45,7 +45,7 @@ def get_ebd(model_id: str) -> OpenAIEmbeddings:
         logger.info(f"Using AzureOpenAI {model_id}")
         llm = AzureOpenAIEmbeddings(
             azure_endpoint=environ["AZURE_OPENAI_ENDPOINT"],
-            deployment=model_id,
+            azure_deployment=model_id,
             **common_openai_params,  # type: ignore[arg-type,call-arg]
         )
     else:
