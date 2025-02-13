@@ -1,8 +1,8 @@
-from enum import Enum, StrEnum
+from enum import IntEnum, StrEnum
 from typing import TypedDict
 
 
-class Language(Enum):
+class Language(StrEnum):
     AR = "ar"
     BG = "bg"
     CA = "ca"
@@ -48,12 +48,12 @@ class Language(Enum):
     ZH_TW = "zh-TW"
 
 
-class EntityType(Enum):
+class EntityType(IntEnum):
     People = 1
     Terms = 2
 
 
-class EntitySource(Enum):
+class EntitySource(IntEnum):
     KindleStore = 0
     Wikipedia = 1
 
@@ -68,6 +68,6 @@ class Entity(TypedDict):
 
 class Table(StrEnum):
     BOOK_METADATA = "book_metadata"
-    ENTITY = "entitY"
+    ENTITY = "entity"
     STRING = "string"
     ENTITY_DESCRIPTION = "entity_description"

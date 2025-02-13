@@ -41,7 +41,7 @@ def dumpDatabese(filename: str, db: Database):
         )
 
 
-def GenerateXRayDb(filename: str, db: Database):
+def generateXRayDb(filename: str, db: Database):
     characters = [i for i in db.dump() if i["frequency"] > 1]
 
     with XRayDb(filename) as xraydb:
@@ -68,3 +68,4 @@ async def peakDatabase(filename: str, llm: BaseChatOpenAI, ebd: OpenAIEmbeddings
 
     print("Total items:", len(data))
     dumpDatabese(filename, db)
+    generateXRayDb(filename, db)

@@ -26,9 +26,9 @@ classifiers = [
 ]
 
 dependencies = [
-  "langchain",
-  "langchain_community",
-  "langchain_openai",
+  "langchain>=0.3",
+  "langchain-community",
+  "langchain-openai",
   "langchain-chroma",
   "loguru",
   "ebooklib",
