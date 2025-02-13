@@ -11,6 +11,7 @@ from xraygpt.xraydb.types import Entity, Language, Table
 
 def _hashAsin(filename: str) -> str:
     basename = os.path.basename(filename)
+    print(basename)
     return (
         "BB"
         + hashlib.sha3_224(basename[: basename.rindex(".")].encode()).hexdigest()[:8]
@@ -29,7 +30,7 @@ class XRayDb:
             os.makedirs(self.root)
         self.asin = asin if asin is not None else _hashAsin(base_filename)
         self.language = language
-        db_filename = f"{self.root}/XRAY.entities.{asin}.asc"
+        db_filename = f"{self.root}/XRAY.entities.{self.asin}.asc"
         if not os.path.exists(db_filename):
             to_init = True
         else:
@@ -45,6 +46,7 @@ class XRayDb:
         self.close()
 
     def close(self):
+        self.db.commit()
         self.db.close()
 
     def init_db(self):
