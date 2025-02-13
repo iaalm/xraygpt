@@ -12,6 +12,34 @@ from xraygpt.xraydb import Entity, EntitySource, EntityType, XRayDb
 def dumpDatabese(filename: str, db: Database):
     json_filename = filename[: filename.rindex(".")] + ".json"
     data = db.dump()
+    # [ [name, type, alias, description, source, omit], ...]
+
+    # item only occurs in one chapter is not necessary to add,
+    # This also helps to filter out celebrity's names.
+    characters = [
+        (
+            i["name"][0],
+            "PERSON",
+            ",".join(i["name"][1:]),
+            i["description"],
+            None,
+            i["frequency"] <= 1,
+        )
+        for i in data
+    ]
+
+    with open(json_filename, "w") as fp:
+        json.dump(
+            characters,
+            fp,
+            indent=4,
+            ensure_ascii=False,
+        )
+
+
+def dumpDatabese_x_ray_creater(filename: str, db: Database):
+    json_filename = filename[: filename.rindex(".")] + ".json"
+    data = db.dump()
     # {"characters":	{"Character1 Name":	{"description": "Character1 Description",
     #               		     "aliases": ["Character1 Alias1", ...]},
     #                    "Character2 Name":	{"description": "Character2 Description",

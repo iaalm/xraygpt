@@ -9,6 +9,8 @@ pip install xraygpt
 python -m xraygpt [epub_file]
 ```
 
+Then a WordDumb style X-Ray json will be generated as "name.json". You can import this file manualy via Calibre. First select the book and click "Open book Folder". Then create/replace `worddumb-custom-x-ray.json` with the generated file.
+
 ### 🤖 LLM Support
 Current this tool only support OpenAI (or compatible API like DeepSeek, Kimi, etc.) and Azure OpenAI by setting environment variables.
 
