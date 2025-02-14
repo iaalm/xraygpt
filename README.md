@@ -10,7 +10,7 @@ python -m xraygpt [epub_file]
 ```
 
 
-### 🤖 LLM Support
+#### 🤖 LLM Support
 Current this tool only support OpenAI (or compatible API like DeepSeek, Kimi, etc.) and Azure OpenAI by setting environment variables.
 
 You can config following environment variables to use different LLM service:
@@ -21,7 +21,7 @@ You can config following environment variables to use different LLM service:
 
 Model name can be set by command line argument `--chat_model` and `--embedding_model`.
 
-### 📚 E-book Support
+#### 📚 E-book Support
 Currently only support `.epub` format. Output format is a .json file as [WordDumb](https://github.com/xxyzz/WordDumb) style.json". You can import this file manualy via Calibre. First select the book and click "Open book Folder". Then create/replace `worddumb-custom-x-ray.json` with the generated json file.
 
 Generating X-Ray DB file is in progress.
@@ -31,7 +31,7 @@ Generating X-Ray DB file is in progress.
 pip install -e '.[dev]'
 ```
 
-### 🎩 Static analysis
+#### 🎩 Static analysis
 ```shell
 make format
 ```
