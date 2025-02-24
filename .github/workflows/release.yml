@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     timeout-minutes: 30
 
     strategy:
@@ -46,6 +48,4 @@ jobs:
       - name: Publish a Python distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         if: startsWith(github.ref, 'refs/tags/')
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
 
