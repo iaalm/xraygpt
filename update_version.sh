@@ -17,6 +17,10 @@ if [ -n "$(git status --porcelain)" ]; then
 fi
 
 python3 -m hatch version $number
+if [ $? -ne 0 ]; then
+  echo "Update version with hatch failed";
+  exit 1
+fi
 v=$(python3 -m hatch version)
 git commit xraygpt/__about__.py -m "Bump version to $v" --no-verify
 git tag v$v
