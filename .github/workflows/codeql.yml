@@ -17,7 +17,7 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: '36 4 * * 6'
+    - cron: '36 4 2 * *'
 
 jobs:
   analyze:
