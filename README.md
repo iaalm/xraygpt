@@ -1,5 +1,5 @@
 # 🔬📖 X-ray GPT
-[![PyPI version](https://badge.fury.io/py/xraygpt.svg)](https://badge.fury.io/py/xraygpt) [![Release Building](https://github.com/iaalm/xraygpt/actions/workflows/release.yml/badge.svg)](https://github.com/iaalm/xraygpt/actions/workflows/release.yml) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) 
+[![PyPI version](https://badge.fury.io/py/xraygpt.svg)](https://badge.fury.io/py/xraygpt) [![Release Building](https://github.com/iaalm/xraygpt/actions/workflows/release.yml/badge.svg)](https://github.com/iaalm/xraygpt/actions/workflows/release.yml) [![CodeQL](https://github.com/iaalm/xraygpt/actions/workflows/codeql.yml/badge.svg)](https://github.com/iaalm/xraygpt/actions/workflows/codeql.yml) [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) 
 
 Generate kindle-like X-ray for e-books with LLM
 
